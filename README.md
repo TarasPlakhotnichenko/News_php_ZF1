@@ -1,1 +1,1 @@
-# News_php_ZF1
+# employee test task - news module, php, MVC, Zend Framework
