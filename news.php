@@ -4,46 +4,46 @@
      class NewsController extends Zend_Controller_Action 
      {
          /**
-          * Список новостей
+          * News index
           */
          public function indexAction() 
          {
              $modelNews = new News();
              $news = $modelNews->getNews();
 			 
-			 // Определение переменных для View
+			 // Defining vars for View
              $this->view->news = $news;
          }
 
          public function viewAction() 
          {
-             // Получение параметра от пользователя
+             // Here we get user parameter
              $newsId = $this->_getParam('newsId');
              
-			 //Создание объекта см. Model
+			 
              $modelNews = new News();
 
-             // Информация о новости
+             // Details about news item
              $news = $modelNews->getNews($newsId);
 
-             // Определение переменных для View
+             // Defining vars for View
              $this->view->news = $news;
          }
 		 
-		 //Далее аналогично как для списка новостей
+		 //The following is likewise as in news index section:
 		 function addAction()
          {
-             echo "<p>Добавить новость IndexController::addAction()</p>";
+             echo "<p>Add news item IndexController::addAction()</p>";
          }
 
          function editAction()
          {
-             echo "<p>Редактировать новость IndexController::editAction()</p>";
+             echo "<p>Edit news item IndexController::editAction()</p>";
          }
 
          function deleteAction()
          {
-             echo "<p>Удалить новость IndexController::deleteAction()</p>";
+             echo "<p>Remove news item IndexController::deleteAction()</p>";
          }
 		 
 		 
@@ -51,8 +51,10 @@
 
 
 <?php
-//Регистрация параметров соединения с базой данных в  Bootstrap.php
+
+//Registration database parameters in Bootstrap.php
 // columns:  id, date_timestamp, update_timestamp, news_header, news_header2, news_body, news_publushed
+
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
 ...
@@ -71,17 +73,14 @@ public function setDbAdapter()
 
     class News extends Zend_Db_Table_Abstract
     {
-        // Имя таблицы
+        // Table name
         protected $_name = 'news';
         
 		
-		//Все новости или одна
-		/**
-         *
-         * @param int $id_news Идентификатор новости
-         * @return array
-         */
-		
+		//One news item or more than one
+		//@param int $id_news news id
+        //@return array
+	
 		
         public function getNews($id_news = null)
         {
@@ -109,11 +108,27 @@ public function setDbAdapter()
 	
 
 //View	
-<ul>
+        <table>
+		<tr>
+		<th>
+		<td>Заголовок</td>
+		<td>Анонс</td>
+		<td>&nbsp</td>
+		<td>&nbsp</td>
+		<td></td>
+		</th>
+		</tr>
+		
+		//Looping through the table
         <?php foreach ($this->news as $news): ?>
-           <li><a href = "<?php echo $this->url(array('id_news' => $news->id),'news'); ?>">
-           <?php echo $news->news_header; ?></a></li>
-
+		<tr>
+		 <td><?php echo $this->escape( $news->news_header); ?> </td >
+		 <td><?php echo $this->escape( $news->news_header2); ?> </td >
+         <td><a href =" <?php echo $this->url( array ( 'controller' => 'index' , 'action' => 'edit' , 'id' => $news->id)); ?> "> Редактировать </a></td>
+		 <td><a href =" <?php echo $this->url( array ( 'controller' => 'index' , 'action' => 'remove' , 'id' => $news->id)); ?> "> Удалить </a></td>
+        </tr>
         <?php endforeach; ?>
-</ul>	
+		</table>
+		
+
 
